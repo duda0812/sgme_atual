@@ -148,12 +148,7 @@ class _LoginState extends State<Login> {
                           final m = _matriculaController.text;
                           final s = _senhaController.text;
                           
-                          if (m.length != 13) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('A matrícula deve conter exatamente 13 números.')),
-    );
-    return;
-  }
+                        
 
   setState(() {
     matricula = m;

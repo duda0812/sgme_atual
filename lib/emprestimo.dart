@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'modeloEmp.dart';
+import 'telaInicial.dart';
 
 class Emprestimo extends StatefulWidget {
   final String matricula;
@@ -21,12 +22,22 @@ class _EmprestimoState extends State<Emprestimo> {
   @override
   void initState() {
     super.initState();
-    emprestimos = List.from(widget.emprestimosIniciais);
+
+    
+    emprestimos = widget.emprestimosIniciais
+        .map((e) => EmprestimoModel(
+              nome: e.nome,
+              imagem: e.imagem,
+              dataEmprestimo: e.dataEmprestimo,
+              dataDevolucao: e.dataDevolucao,
+              status: e.status ?? "Pendente",
+            ))
+        .toList();
   }
 
   void devolverEmprestimo(EmprestimoModel e) {
     setState(() {
-      emprestimos.remove(e);
+      e.status = "Devolvido";
     });
   }
 
@@ -36,8 +47,29 @@ class _EmprestimoState extends State<Emprestimo> {
       body: Stack(
         children: [
           Container(color: Colors.grey[300]),
-
-          // TOPO
+  Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: 16.0),
+              child: Image.asset(
+                'assets/images/image.png',
+                width: 400,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+           Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(left: 16.0),
+              child: Image.asset(
+                'assets/images/image.png',
+                width: 400,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          
           Positioned(
             top: 0,
             left: 0,
@@ -46,39 +78,63 @@ class _EmprestimoState extends State<Emprestimo> {
               height: 90,
               color: Colors.grey[100],
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(Icons.account_circle_outlined, size: 50, color: Colors.black87),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.matricula,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black87)),
-                        const Text("Aluno(a)", style: TextStyle(fontSize: 14, color: Colors.black54)),
-                      ],
-                    )
+                    Row(children: [
+                      const Icon(Icons.account_circle_outlined, size: 50),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(widget.matricula,
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w600)),
+                          const Text("Aluno(a)", style: TextStyle(fontSize: 14)),
+                        ],
+                      )
+                    ]),
+
+                    Row(children: [
+                        TextButton(
+                        onPressed: () =>
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => const Telainicial())),
+                        child: const Text("Sair", style: TextStyle(fontSize: 18)),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, emprestimos);
+                        },
+                        child: const Text("Materiais",
+                            style: TextStyle(fontSize: 18)),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text("Empréstimos",
+                            style: TextStyle(fontSize: 18)),
+                      ),
+                    ]),
                   ],
                 ),
               ),
             ),
           ),
 
-          // TÍTULO
-          Positioned(
+          
+          const Positioned(
             top: 120,
             left: 0,
             right: 0,
-            child: const Center(
+            child: Center(
               child: Text(
                 "Materiais emprestados",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Colors.black87),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
               ),
             ),
           ),
 
-          // LISTA DE EMPRÉSTIMOS
+          
           Padding(
             padding: const EdgeInsets.only(top: 180),
             child: Center(
@@ -89,13 +145,16 @@ class _EmprestimoState extends State<Emprestimo> {
                   spacing: 40,
                   runSpacing: 40,
                   children: emprestimos
-                      .map((e) => EmprestimoCard(
-                            nome: e.nome,
-                            imagem: e.imagem,
-                            dataEmprestimo: e.dataEmprestimo,
-                            dataDevolucao: e.dataDevolucao,
-                            onDevolver: () => devolverEmprestimo(e),
-                          ))
+                      .map(
+                        (e) => EmprestimoCard(
+                          nome: e.nome,
+                          imagem: e.imagem,
+                          dataEmprestimo: e.dataEmprestimo,
+                          dataDevolucao: e.dataDevolucao,
+                          status: e.status ?? "Pendente",
+                          onDevolver: () => devolverEmprestimo(e),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
@@ -107,13 +166,14 @@ class _EmprestimoState extends State<Emprestimo> {
   }
 }
 
-// ------------------- EMPRESTIMO CARD -------------------
+
 
 class EmprestimoCard extends StatelessWidget {
   final String nome;
   final String imagem;
   final String dataEmprestimo;
   final String dataDevolucao;
+  final String status;
   final VoidCallback onDevolver;
 
   const EmprestimoCard({
@@ -122,6 +182,7 @@ class EmprestimoCard extends StatelessWidget {
     required this.imagem,
     required this.dataEmprestimo,
     required this.dataDevolucao,
+    required this.status,
     required this.onDevolver,
   });
 
@@ -139,9 +200,11 @@ class EmprestimoCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(nome,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.black87),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               textAlign: TextAlign.center),
+
           const SizedBox(height: 12),
+
           Container(
             width: 100,
             height: 100,
@@ -155,22 +218,44 @@ class EmprestimoCard extends StatelessWidget {
               child: Image.asset(imagem, fit: BoxFit.contain),
             ),
           ),
+
           const SizedBox(height: 16),
-          Text("Empréstimo:", style: const TextStyle(fontSize: 14, color: Colors.black87)),
-          Text(dataEmprestimo, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+
+          Text("Empréstimo:", style: const TextStyle(fontSize: 14)),
+          Text(dataEmprestimo,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+
           const SizedBox(height: 8),
-          Text("Devolução:", style: const TextStyle(fontSize: 14, color: Colors.black87)),
-          Text(dataDevolucao, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+
+          Text("Devolução:", style: const TextStyle(fontSize: 14)),
+          Text(dataDevolucao,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+
+          const SizedBox(height: 12),
+
+   
+          Text(
+            "Status: $status",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: status == "Devolvido" ? Colors.green : Colors.red,
+            ),
+          ),
+
           const SizedBox(height: 16),
+
+       
           ElevatedButton(
-            onPressed: onDevolver,
+            onPressed: status == "Devolvido" ? null : onDevolver,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFCC6633),
               foregroundColor: Colors.white,
               minimumSize: const Size(150, 40),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+              disabledBackgroundColor: Colors.grey,
             ),
-            child: const Text("DEVOLVER", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            child: const Text("DEVOLVER",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
         ],
       ),

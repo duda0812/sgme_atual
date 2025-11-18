@@ -174,16 +174,7 @@ class Telainicial extends StatelessWidget {
             ),
           ),
 
-          Positioned(
-            right: 20,
-            top:20,
-            child: ElevatedButton(onPressed: (){},
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ), child: Text("Entrar"),
-            ),)
+
         ],
       )
     );
