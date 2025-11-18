@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
 
 class Telainicial extends StatelessWidget {
   const Telainicial({super.key});
@@ -15,11 +16,11 @@ class Telainicial extends StatelessWidget {
                 constraints: const BoxConstraints(maxWidth: 1000),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center, // Centraliza tudo
+                  crossAxisAlignment: CrossAxisAlignment.center, 
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // Centraliza horizontalmente
-                      crossAxisAlignment: CrossAxisAlignment.center, // Alinha o texto e a imagem no centro vertical
+                      mainAxisAlignment: MainAxisAlignment.center, 
+                      crossAxisAlignment: CrossAxisAlignment.center, 
                       children: [
                         Flexible(
                           flex: 2,
@@ -75,7 +76,7 @@ class Telainicial extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 60), // Espaço entre o texto e a imagem
+                        const SizedBox(width: 60), 
                         Flexible(
                           flex: 2,
                           child: Image.asset(
@@ -87,9 +88,14 @@ class Telainicial extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 40), // Espaço entre a linha e o texto inferior
+                    const SizedBox(height: 40), 
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Login()),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         elevation: 5,
