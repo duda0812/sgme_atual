@@ -1,44 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/emprestimo.dart';
-import 'package:projeto/materialEmprestado.dart';
-import 'package:projeto/telaInicial.dart';
+import 'home.dart';
+import 'telaInicial.dart';
 
-
-
-
-class Home extends StatefulWidget {
+class Emprestimo extends StatefulWidget {
   final String matricula;
-  const Home({super.key, required this.matricula});
+  const Emprestimo({super.key, required this.matricula});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Emprestimo> createState() => _EmprestimoState();
 }
 
-class _HomeState extends State<Home> {
+class _EmprestimoState extends State<Emprestimo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+        
           Container(color: Colors.grey[300]),
-           Align(
+
+
+          Align(
             alignment: Alignment.bottomLeft,
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
+              padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
               child: Image.asset(
                 'assets/images/image.png',
-                width: 400,
+                width: 250,
                 fit: BoxFit.contain,
               ),
             ),
           ),
+
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
+              padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
               child: Image.asset(
                 'assets/images/image.png',
-                width: 400,
+                width: 250,
                 fit: BoxFit.contain,
               ),
             ),
@@ -56,6 +56,7 @@ class _HomeState extends State<Home> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                 
                     Row(
                       children: [
                         const Icon(Icons.account_circle_outlined,
@@ -84,13 +85,15 @@ class _HomeState extends State<Home> {
                       ],
                     ),
 
+                    
                     Row(
                       children: [
                         TextButton(
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const Telainicial()),
+                              MaterialPageRoute(
+                                  builder: (_) => const Telainicial()),
                             );
                           },
                           child: const Text("Sair",
@@ -98,38 +101,29 @@ class _HomeState extends State<Home> {
                         ),
                         TextButton(
                           onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    Home(matricula: widget.matricula),
+                              ),
+                            );
                           },
                           child: const Text("Materiais",
                               style: TextStyle(color: Colors.black87, fontSize: 18)),
                         ),
                         TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const Telainicial()),
-                            );
-                          },
+                          onPressed: () {},
                           child: const Text("Pendências",
                               style: TextStyle(color: Colors.black87, fontSize: 18)),
                         ),
                         TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const Telainicial()),
-                            );
-                          },
+                          onPressed: () {},
                           child: const Text("Devolução",
                               style: TextStyle(color: Colors.black87, fontSize: 18)),
                         ),
                         TextButton(
-                          onPressed: () {
-                     
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => Emprestimo(matricula: widget.matricula)),
-                            );
-                          },
+                          onPressed: () {},
                           child: const Text("Empréstimos",
                               style: TextStyle(color: Colors.black87, fontSize: 18)),
                         ),
@@ -140,14 +134,14 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+
           Positioned(
             top: 120,
             left: 0,
             right: 0,
             child: const Center(
               child: Text(
-                "Materiais disponíveis",
+                "Materiais emprestados",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -156,44 +150,39 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          
-       
+
+
           Padding(
             padding: const EdgeInsets.only(top: 180),
             child: Center(
-              
-              child: SingleChildScrollView( 
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 child: Wrap(
                   alignment: WrapAlignment.center,
-                  spacing: 40, 
+                  spacing: 40,
                   runSpacing: 40,
-          
                   children: [
-                    MaterialCard(
+
+                    // EXEMPLOS DE CARDS
+                    EmprestimoCard(
                       nome: "Bola de vôlei",
                       imagem: "assets/images/bola_volei.png",
-                      quantidade: 12,
-                      matriculaAluno: widget.matricula, 
+                      dataEmprestimo: "12/11/2025",
+                      dataDevolucao: "19/11/2025",
                     ),
-                    MaterialCard(
+                    EmprestimoCard(
                       nome: "Bola de futebol",
                       imagem: "assets/images/bola_futebol.png",
-                      quantidade: 8,
-                      matriculaAluno: widget.matricula, 
+                      dataEmprestimo: "10/11/2025",
+                      dataDevolucao: "17/11/2025",
                     ),
-                    MaterialCard(
+                    EmprestimoCard(
                       nome: "Bola de basquete",
                       imagem: "assets/images/bola_basquete.jpg",
-                      quantidade: 9,
-                      matriculaAluno: widget.matricula, 
+                      dataEmprestimo: "08/11/2025",
+                      dataDevolucao: "15/11/2025",
                     ),
-                    MaterialCard(
-                      nome: "Bola de tênis de mesa",
-                      imagem: "assets/images/bola_tenis.png",
-                      quantidade: 10,
-                      matriculaAluno: widget.matricula, 
-                    ),
+
                   ],
                 ),
               ),
@@ -207,24 +196,24 @@ class _HomeState extends State<Home> {
 
 
 
-class MaterialCard extends StatelessWidget {
+class EmprestimoCard extends StatelessWidget {
   final String nome;
   final String imagem;
-  final int quantidade;
-  final String matriculaAluno; 
+  final String dataEmprestimo;
+  final String dataDevolucao;
 
-  const MaterialCard({
+  const EmprestimoCard({
     super.key,
     required this.nome,
     required this.imagem,
-    required this.quantidade,
-    required this.matriculaAluno, 
+    required this.dataEmprestimo,
+    required this.dataDevolucao,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 180,
+      width: 220,
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
         color: const Color(0xFFBDBDBD),
@@ -237,21 +226,21 @@ class MaterialCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
           Text(
             nome,
             style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
               color: Colors.black87,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 10),
+
+          const SizedBox(height: 12),
 
           Container(
-            width: 95,
-            height: 95,
+            width: 100,
+            height: 100,
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: Colors.black54, width: 2),
@@ -265,51 +254,47 @@ class MaterialCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 15),
-          const Text(
-            "Quantidade disponível:",
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 4),
+
+          const SizedBox(height: 16),
+
+          Text("Empréstimo:",
+              style: TextStyle(fontSize: 14, color: Colors.black87)),
           Text(
-            "$quantidade",
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w900,
-              color: Colors.black,
-            ),
+            dataEmprestimo,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: ElevatedButton(
-              onPressed: () {
-    
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Material_emprestado(matricula: matriculaAluno)),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFCC6633),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                minimumSize: const Size(double.infinity, 40),
-              ),
-              child: const Text(
-                "SOLICITAR",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+
+          const SizedBox(height: 8),
+
+          Text("Devolução:",
+              style: TextStyle(fontSize: 14, color: Colors.black87)),
+          Text(
+            dataDevolucao,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 16),
+
+          ElevatedButton(
+            onPressed: () {
+              // Colocar ação de devolver material
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFCC6633),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(150, 40),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
               ),
             ),
-          ),
+            child: const Text(
+              "DEVOLVER",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
         ],
       ),
     );
