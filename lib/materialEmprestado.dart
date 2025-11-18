@@ -1,113 +1,134 @@
 import 'package:flutter/material.dart';
-import 'package:projeto/home.dart'; 
-import 'package:projeto/telaInicial.dart';
 
 class Material_emprestado extends StatefulWidget {
   final String matricula;
-  const Material_emprestado({super.key,  required this.matricula});
+  final String nomeMaterial;
+  final String imagemMaterial;
+
+  const Material_emprestado({
+    super.key,
+    required this.matricula,
+    required this.nomeMaterial,
+    required this.imagemMaterial,
+  });
 
   @override
   State<Material_emprestado> createState() => _Material_emprestadoState();
 }
 
 class _Material_emprestadoState extends State<Material_emprestado> {
+  TextEditingController dataEmprestimo = TextEditingController();
+  TextEditingController dataDevolucao = TextEditingController();
+
+  Future<void> pickDate() async {
+    DateTime? dataSelecionada = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (dataSelecionada != null) {
+      dataEmprestimo.text = "${dataSelecionada.day}/${dataSelecionada.month}/${dataSelecionada.year}";
+      DateTime devolucao = dataSelecionada.add(const Duration(days: 7));
+      dataDevolucao.text = "${devolucao.day}/${devolucao.month}/${devolucao.year}";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(color: Colors.grey[300]),
-
-
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Image.asset(
-                'assets/images/image.png',
-                width: 400,
-                fit: BoxFit.contain,
-              ),
+      backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        backgroundColor: Colors.orange[700],
+        title: const Text("Solicitar Material"),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Container(
+            width: 320,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFFBDBDBD),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFFCC6633), width: 2),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Image.asset(
-                'assets/images/image.png',
-                width: 400,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-
-
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 90,
-              color: Colors.grey[100],
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-
-                    Row(
-                      children: [
-                        const Icon(Icons.account_circle_outlined,
-                            size: 50, color: Colors.black87),
-                        const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.matricula,
-                              style: const TextStyle( 
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            const Text(
-                              "Aluno(a)",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) =>  Home(matricula: widget.matricula,)),
-                            );
-                          },
-                          child: const Text("Voltar",
-                              style: TextStyle(color: Colors.black87, fontSize: 18)),
-                        ),
-                       
-                       
-                       
-                       
-                      ],
-                    )
-                  ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(widget.nomeMaterial, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black87), textAlign: TextAlign.center),
+                const SizedBox(height: 12),
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.black54, width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.asset(widget.imagemMaterial, fit: BoxFit.contain),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 20),
+                const Text("Matrícula:", style: TextStyle(fontSize: 16)),
+                Text(widget.matricula, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 25),
+                
+                TextField(
+                  controller: dataEmprestimo,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: "Data do Empréstimo",
+                    prefixIcon: const Icon(Icons.date_range),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  onTap: pickDate,
+                ),
+                const SizedBox(height: 15),
+                TextField(
+                  controller: dataDevolucao,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: "Data da Devolução",
+                    prefixIcon: const Icon(Icons.calendar_today),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+                const SizedBox(height: 25),
+                ElevatedButton(
+                  onPressed: () {
+                    if (dataEmprestimo.text.isEmpty || dataDevolucao.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Preencha as datas!")));
+                      return;
+                    }
+
+                    Navigator.pop(context, {
+                      "nome": widget.nomeMaterial,
+                      "imagem": widget.imagemMaterial,
+                      "dataEmprestimo": dataEmprestimo.text,
+                      "dataDevolucao": dataDevolucao.text,
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFCC6633),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: const Text("CONFIRMAR", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                ),
+              ],
             ),
           ),
-        ],
-      ),);
+        ),
+      ),
+    );
   }
 }
